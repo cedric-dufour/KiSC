@@ -1,0 +1,8 @@
+# Ignore temporary/backup files
+*#
+*~
+semantic.cache
+
+# Ignore Python byte-compiled files
+*.pyc
+

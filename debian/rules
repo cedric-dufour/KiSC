@@ -1,0 +1,164 @@
+#!/usr/bin/make -f
+
+#export DH_VERBOSE=1
+export PACKAGE = kisc
+export VERSION := $(shell dpkg-parsechangelog | egrep '^Version:' | cut -f 2 -d ' ')
+
+# Let's keep our source tree clean
+export PYTHONDONTWRITEBYTECODE=1
+
+# Required for 'help2man'
+export PYTHONPATH:=./python:${PYTHONPATH}
+export PATH:=.:${PATH}
+
+%:
+	dh $@ --with python3 --buildsystem=pybuild
+
+override_dh_install:
+	# Fix global variables
+	sed -i "s|KISC_VERSION\s*=.*|KISC_VERSION = '$(VERSION)'|" debian/tmp/usr/lib/*/dist-packages/KiSC/__init__.py
+
+	# Install additional stuff
+	# ... kisc script
+	mkdir -p debian/tmp/usr/bin
+	cp kisc debian/tmp/usr/bin/.
+	# ... bash completion
+	mkdir -p debian/tmp/etc/bash_completion.d
+	cp kisc.bash_completion debian/tmp/etc/bash_completion.d/kisc
+	# ... main configuration
+	mkdir -p debian/tmp/etc
+	cp EXAMPLES/kisc/kisc.cfg debian/tmp/etc/kisc.cfg
+	# ... OCF resource agent
+	mkdir -p debian/tmp/usr/lib/ocf/resource.d/kisc
+	cp ocf/* debian/tmp/usr/lib/ocf/resource.d/kisc/.
+	# ... configuration examples
+	mkdir -p debian/tmp/usr/share/doc/kisc
+	cp -r EXAMPLES debian/tmp/usr/share/doc/kisc/examples
+
+	# Create man pages
+	mkdir -p debian/tmp/usr/share/man/man1
+	help2man \
+		--name 'K.I.S.S. Cluster (KiSC): kisc' \
+		--help-option '--help' --version-string $(VERSION) --no-discard-stderr --no-info \
+		kisc | fgrep -v 'invalid option' > debian/tmp/usr/share/man/man1/kisc.1
+	help2man \
+		--name 'K.I.S.S. Cluster (KiSC): kisc config' \
+		--help-option 'config --help' --version-string $(VERSION) --no-discard-stderr --no-info \
+		kisc | fgrep -v 'invalid option' > debian/tmp/usr/share/man/man1/kisc-config.1
+	help2man \
+		--name 'K.I.S.S. Cluster (KiSC): kisc config show' \
+		--help-option 'config show --help' --version-string $(VERSION) --no-discard-stderr --no-info \
+		kisc | fgrep -v 'invalid option' > debian/tmp/usr/share/man/man1/kisc-config-show.1
+	help2man \
+		--name 'K.I.S.S. Cluster (KiSC): kisc config list' \
+		--help-option 'config list --help' --version-string $(VERSION) --no-discard-stderr --no-info \
+		kisc | fgrep -v 'invalid option' > debian/tmp/usr/share/man/man1/kisc-config-list.1
+	help2man \
+		--name 'K.I.S.S. Cluster (KiSC): kisc config resolve' \
+		--help-option 'config resolve --help' --version-string $(VERSION) --no-discard-stderr --no-info \
+		kisc | fgrep -v 'invalid option' > debian/tmp/usr/share/man/man1/kisc-config-resolve.1
+	help2man \
+		--name 'K.I.S.S. Cluster (KiSC): kisc cluster' \
+		--help-option 'cluster --help' --version-string $(VERSION) --no-discard-stderr --no-info \
+		kisc | fgrep -v 'invalid option' > debian/tmp/usr/share/man/man1/kisc-cluster.1
+	help2man \
+		--name 'K.I.S.S. Cluster (KiSC): kisc cluster status' \
+		--help-option 'cluster status --help' --version-string $(VERSION) --no-discard-stderr --no-info \
+		kisc | fgrep -v 'invalid option' > debian/tmp/usr/share/man/man1/kisc-cluster-status.1
+	help2man \
+		--name 'K.I.S.S. Cluster (KiSC): kisc host' \
+		--help-option 'host --help' --version-string $(VERSION) --no-discard-stderr --no-info \
+		kisc | fgrep -v 'invalid option' > debian/tmp/usr/share/man/man1/kisc-host.1
+	help2man \
+		--name 'K.I.S.S. Cluster (KiSC): kisc host start' \
+		--help-option 'host start --help' --version-string $(VERSION) --no-discard-stderr --no-info \
+		kisc | fgrep -v 'invalid option' > debian/tmp/usr/share/man/man1/kisc-host-start.1
+	help2man \
+		--name 'K.I.S.S. Cluster (KiSC): kisc host stop' \
+		--help-option 'host stop --help' --version-string $(VERSION) --no-discard-stderr --no-info \
+		kisc | fgrep -v 'invalid option' > debian/tmp/usr/share/man/man1/kisc-host-stop.1
+	help2man \
+		--name 'K.I.S.S. Cluster (KiSC): kisc host status' \
+		--help-option 'host status --help' --version-string $(VERSION) --no-discard-stderr --no-info \
+		kisc | fgrep -v 'invalid option' > debian/tmp/usr/share/man/man1/kisc-host-status.1
+	help2man \
+		--name 'K.I.S.S. Cluster (KiSC): kisc host runtime' \
+		--help-option 'host runtime --help' --version-string $(VERSION) --no-discard-stderr --no-info \
+		kisc | fgrep -v 'invalid option' > debian/tmp/usr/share/man/man1/kisc-host-runtime.1
+	help2man \
+		--name 'K.I.S.S. Cluster (KiSC): kisc resource' \
+		--help-option 'resource --help' --version-string $(VERSION) --no-discard-stderr --no-info \
+		kisc | fgrep -v 'invalid option' > debian/tmp/usr/share/man/man1/kisc-resource.1
+	help2man \
+		--name 'K.I.S.S. Cluster (KiSC): kisc resource start' \
+		--help-option 'resource start --help' --version-string $(VERSION) --no-discard-stderr --no-info \
+		kisc | fgrep -v 'invalid option' > debian/tmp/usr/share/man/man1/kisc-resource-start.1
+	help2man \
+		--name 'K.I.S.S. Cluster (KiSC): kisc resource suspend' \
+		--help-option 'resource suspend --help' --version-string $(VERSION) --no-discard-stderr --no-info \
+		kisc | fgrep -v 'invalid option' > debian/tmp/usr/share/man/man1/kisc-resource-suspend.1
+	help2man \
+		--name 'K.I.S.S. Cluster (KiSC): kisc resource resume' \
+		--help-option 'resource resume --help' --version-string $(VERSION) --no-discard-stderr --no-info \
+		kisc | fgrep -v 'invalid option' > debian/tmp/usr/share/man/man1/kisc-resource-resume.1
+	help2man \
+		--name 'K.I.S.S. Cluster (KiSC): kisc resource stop' \
+		--help-option 'resource stop --help' --version-string $(VERSION) --no-discard-stderr --no-info \
+		kisc | fgrep -v 'invalid option' > debian/tmp/usr/share/man/man1/kisc-resource-stop.1
+	help2man \
+		--name 'K.I.S.S. Cluster (KiSC): kisc resource migrate' \
+		--help-option 'resource migrate --help' --version-string $(VERSION) --no-discard-stderr --no-info \
+		kisc | fgrep -v 'invalid option' > debian/tmp/usr/share/man/man1/kisc-resource-migrate.1
+	help2man \
+		--name 'K.I.S.S. Cluster (KiSC): kisc resource status' \
+		--help-option 'resource status --help' --version-string $(VERSION) --no-discard-stderr --no-info \
+		kisc | fgrep -v 'invalid option' > debian/tmp/usr/share/man/man1/kisc-resource-status.1
+	help2man \
+		--name 'K.I.S.S. Cluster (KiSC): kisc resource runtime' \
+		--help-option 'resource runtime --help' --version-string $(VERSION) --no-discard-stderr --no-info \
+		kisc | fgrep -v 'invalid option' > debian/tmp/usr/share/man/man1/kisc-resource-runtime.1
+	help2man \
+		--name 'K.I.S.S. Cluster (KiSC): kisc resource list' \
+		--help-option 'resource list --help' --version-string $(VERSION) --no-discard-stderr --no-info \
+		kisc | fgrep -v 'invalid option' > debian/tmp/usr/share/man/man1/kisc-resource-list.1
+	help2man \
+		--name 'K.I.S.S. Cluster (KiSC): kisc resource help' \
+		--help-option 'resource help --help' --version-string $(VERSION) --no-discard-stderr --no-info \
+		kisc | fgrep -v 'invalid option' > debian/tmp/usr/share/man/man1/kisc-resource-help.1
+
+	# Install
+	dh_install
+
+override_dh_installdocs:
+	dh_installdocs README.md USAGE.md CHANGELOG
+
+override_dh_clean:
+	dh_clean
+	rm -rf MANIFEST build dist
+	find python -name '*.pyc' -delete
+	find python -type d -name '__pycache__' -exec rmdir {} \;
+
+build-source-tarball:
+	dh_testdir
+	dh_clean build-stamp
+	# Create the source tarball
+	mkdir -p /tmp/$(PACKAGE)-source-$(VERSION)
+	cp -r * /tmp/$(PACKAGE)-source-$(VERSION)/.
+	tar -C /tmp -cjf ../$(PACKAGE)-source-$(VERSION).tar.bz2 $(PACKAGE)-source-$(VERSION)
+	rm -rf /tmp/$(PACKAGE)-source-$(VERSION)
+
+build-install-tarball:
+	# Create the installation tarball
+	# WARNING: make install before-hand!
+	mkdir -p /tmp/$(PACKAGE)-$(VERSION)/
+	cp -rp debian/tmp/usr debian/tmp/etc /tmp/$(PACKAGE)-$(VERSION)/.
+	tar -C /tmp -cjf ../$(PACKAGE)-$(VERSION).tar.bz2 $(PACKAGE)-$(VERSION)
+	rm -rf /tmp/$(PACKAGE)-$(VERSION)
+
+debian-packages:
+	debuild -us -uc -b
+
+debian-source:
+	debuild -I'.git*' -I'*.pyc' -I'__pycache__' -us -uc -S
+
+release: debian-packages build-install-tarball debian-source build-source-tarball ;

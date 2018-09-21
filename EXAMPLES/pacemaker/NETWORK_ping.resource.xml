@@ -1,0 +1,21 @@
+<!-- Sample Pacemaker network health/connectivity check resource configuration file -->
+<resources>
+  <clone id="NETWORK-ping">
+    <primitive id="NETWORK-ping-P" class="ocf" provider="pacemaker" type="ping">
+      <operations>
+        <op id="NETWORK-ping-P-OP-start" name="start" interval="0" timeout="60s"/>
+        <op id="NETWORK-ping-P-OP-stop" name="stop" interval="0" timeout="30s"/>
+        <op id="NETWORK-ping-P-OP-monitor" name="monitor" interval="60s" timeout="55s"/>
+      </operations>
+      <instance_attributes id="NETWORK-ping-P-IA">
+        <nvpair id="NETWORK-ping-P-IA-host_list" name="host_list" value="192.168.0.1"/>
+        <nvpair id="NETWORK-ping-P-IA-timeout" name="timeout" value="3"/>
+        <nvpair id="NETWORK-ping-P-IA-attempts" name="attempts" value="3"/>
+        <nvpair id="NETWORK-ping-P-IA-options" name="options" value="-i 3"/>
+        <nvpair id="NETWORK-ping-P-IA-multiplier" name="multiplier" value="500"/>
+        <nvpair id="NETWORK-ping-P-IA-dampen" name="dampen" value="90"/>
+      </instance_attributes>
+    </primitive>
+  </clone>
+</resources>
+

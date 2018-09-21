@@ -1,0 +1,12 @@
+<!-- Sample Pacemaker constraint configuration file -->
+<constraints>
+  <!-- network health/connectivity constraint (see NETWORK_ping.xml) -->
+  <rsc_location id="%{$SELF.name}-connectivity" rsc="%{$SELF.name}">
+    <rule id="%{$SELF.name}-connectivity-R" score="-INFINITY" boolean-op="or">
+      <expression id="%{$SELF.name}-connectivity-R-E-not_defined" attribute="pingd" operation="not_defined"/>
+      <expression id="%{$SELF.name}-connectivity-R-E-lte" attribute="pingd" operation="lte" value="0"/>
+    </rule>
+  </rsc_location>
+  <!-- preferred node constraint (make sure to define the '_preferred_node' setting in your KiSC configuration) -->
+  <rsc_location id="%{$SELF.name}-location" rsc="%{$SELF.name}" node="%{$SELF._preferred_node}" score="1000"/>
+</constraints>

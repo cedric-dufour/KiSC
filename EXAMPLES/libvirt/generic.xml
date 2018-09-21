@@ -1,0 +1,40 @@
+<!-- Sample Libvirt domain configuration file (generic for Linux VMs) -->
+<domain type='kvm'>
+  <name>%{$SELF.name}</name>
+  <uuid>00000000-0000-0000-0000-%{$SELF._mac_address|remove(':')}</uuid>
+  <memory>%{$SELF.CONSUMES[RAM]|int|mul(1024)}</memory>
+  <vcpu>%{$SELF.CONSUMES[CPU]}</vcpu>
+  <os>
+    <type arch='x86_64' machine='pc'>hvm</type>
+    <boot dev='hd'/>
+  </os>
+  <features>
+    <acpi/>
+    <apic/>
+    <pae/>
+  </features>
+  <clock offset='utc'/>
+  <on_poweroff>destroy</on_poweroff>
+  <on_reboot>restart</on_reboot>
+  <on_crash>restart</on_crash>
+  <devices>
+    <emulator>/usr/bin/kvm</emulator>
+    <disk type='file' device='disk'>
+      <driver name='qemu' type='raw' cache='none' error_policy='enospace'/>
+      <source file='%{mount-intranet.mountpoint}/%{$SELF.name}.raw'/>
+      <target dev='vda' bus='virtio'/>
+    </disk>
+    <interface type='bridge'>
+      <mac address='%{$SELF._mac_address}'/>
+      <source bridge='%{br-intranet.name}'/>
+      <model type='virtio'/>
+    </interface>
+    <serial type='pty'>
+      <target port='0'/>
+    </serial>
+    <console type='pty'>
+      <target type='serial' port='0'/>
+    </console>
+    <input type='tablet' bus='usb'/>
+  </devices>
+</domain>

@@ -1,0 +1,26 @@
+<!-- Sample Pacemaker resource configuration file -->
+<resources>
+  <group id="%{$SELF.name}">
+    <primitive id="%{$SELF.name}-LibvirtQemu" class="ocf" provider="kisc" type="LibvirtQemu">
+      <instance_attributes id="%{$SELF.name}-LibvirtQemu-IA">
+        <nvpair id="%{$SELF.name}-LibvirtQemu-IA-name" name="domain" value="%{$SELF.name}"/>
+        <!-- Libvirt configuration file (make sure to define the '_config_file' setting in your KiSC configuration) -->
+        <nvpair id="%{$SELF.name}-LibvirtQemu-IA-config" name="config" value="%{$SELF._config_file}"/>
+        <nvpair id="%{$SELF.name}-LibvirtQemu-IA-kisc-id" name="kisc_id" value="%{$SELF.ID}"/>
+        <nvpair id="%{$SELF.name}-LibvirtQemu-IA-kisc-cache" name="kisc_cache" value="%{KiSC.cache_dir}/OCF_LibvirtQemu:%{$SELF.name}.config.xml"/>
+      </instance_attributes>
+      <utilization id="%{$SELF.name}-LibvirtQemu-utilization">
+        <nvpair id="%{$SELF.name}-LibvirtQemu-utilization-cpu" name="cpu" value="%{$SELF.CONSUMES[CPU]}"/>
+        <nvpair id="%{$SELF.name}-LibvirtQemu-utilization-memory" name="memory" value="%{$SELF.CONSUMES[RAM]}"/>
+      </utilization>
+      <operations>
+        <op id="%{$SELF.name}-LibvirtQemu-OP-monitor" name="monitor" timeout="30s" interval="60s"/>
+        <op id="%{$SELF.name}-LibvirtQemu-OP-start" name="start" timeout="60s" interval="0"/>
+        <op id="%{$SELF.name}-LibvirtQemu-OP-stop" name="stop" timeout="60s" interval="0"/>
+        <op id="%{$SELF.name}-LibvirtQemu-OP-migrate-to" name="migrate_to" timeout="60s" interval="0"/>
+        <op id="%{$SELF.name}-LibvirtQemu-OP-migrate-from" name="migrate_from" timeout="60s" interval="0"/>
+      </operations>
+    </primitive>
+  </group>
+</resources>
+

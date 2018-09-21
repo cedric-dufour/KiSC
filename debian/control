@@ -1,0 +1,37 @@
+Source: kisc
+Section: admin
+Priority: optional
+Maintainer: Cedric Dufour <cedric.dufour@idiap.ch>
+Build-Depends: python3 (>= 3.4), debhelper (>= 8), dh-python, bash, help2man
+X-Python3-Version: >= 3.4
+Homepage: https://github.com/idiap/kisc
+Standards-Version: 4.1.3
+
+Package: kisc
+Architecture: all
+Depends: bash, kisc-python3
+Suggests: kisc-resource-agents, kisc-examples
+Description: K.I.S.S. Cluster (KiSC)
+ K.I.S.S. Cluster (KiSC) - with K.I.S.S. as in "Keep It Stupid Simple" - is
+ a utility that aims to simplify the life of administrators managing resources
+ accross a cluster of hosts.
+ .
+ The two main objectives of K.I.S.S. Cluster (KiSC) are:
+  - provide a straight-forward way of defining cluster hosts and services,
+    using simple INI file(s)
+  - provide a no-daemon way of keeping track of hosts and services status,
+    using runtime files stored on shared storage
+
+Package: kisc-python3
+Architecture: all
+Depends: python3 (>= 3.4), ${python3:Depends}
+Description: K.I.S.S. Cluster (KiSC) - Python 3.x library
+
+Package: kisc-resource-agents
+Architecture: all
+Depends: bash, kisc
+Description: K.I.S.S. Cluster (KiSC) - OCF resource agents (for Pacemaker integration)
+
+Package: kisc-examples
+Architecture: all
+Description: K.I.S.S. Cluster (KiSC) - Configuration examples
