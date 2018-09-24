@@ -40,9 +40,9 @@ What K.I.S.S. Cluster (KiSC) does NOT
 * It does not handle high-availability!  
   K.I.S.S.! But it does integrate elegantly with pacemaker [4]!
 
-[1] https://www.openssh.com/
-[2] https://github.com/chaos/pdsh/
-[3] https://github.com/chaos/genders/
+[1] https://www.openssh.com/  
+[2] https://github.com/chaos/pdsh/  
+[3] https://github.com/chaos/genders/  
 [4] https://clusterlabs.org/
 
 
